@@ -6,10 +6,12 @@ dotenv.config();
 
 export function postUsers(req, res) {
   const user = req.body;
+
+  
   const password = req.body.password;
 
   const saltRounds = 10;
-  
+
   const passwordHash = bcrypt.hashSync(password, saltRounds);
 
   console.log(passwordHash);
@@ -35,12 +37,12 @@ export function loginUser(req, res) {
   const credentials = req.body;
 
   User.findOne({ email: credentials.email }).then((user) => {
+
     if (user == null) {
       res.status(403).json({
         message: 'User not found',
       });
     } else {
-
       const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
 
       if (!isPasswordValid) {
@@ -67,3 +69,8 @@ export function loginUser(req, res) {
     }
   });
 }
+
+
+const email = "kjsdhfkladsf"
+const password = "kljlkslkjlk;kjkl;jsadafklj"
+const name = "sdfads"
