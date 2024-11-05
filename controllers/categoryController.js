@@ -41,6 +41,7 @@ export function createCategory(req,res){
 
 //delete category
 export function deleteCategory(req,res){
+  console.log(req.user)
   if(req.user == null){
     res.status(401).json({
       message : "Unauthorized"
