@@ -35,7 +35,6 @@ export function postUsers(req, res) {
 
 export function loginUser(req, res) {
   const credentials = req.body;
-
   User.findOne({ email: credentials.email }).then((user) => {
 
     if (user == null) {
@@ -95,8 +94,77 @@ export function isCustomerValid(req){
   
 }
 
+export function getAllUsers(req,res){
+  //validate admin
+  if(!isAdminValid(req)){
+    res.status(403).json({
+      message: "Forbidden"
+    })
+    return;
+  }
+  User.find().then((users)=>{
+    res.json({
+      message: "Users found",
+      users: users
+    })
+  }).catch((err)=>{
+    res.json({
+      message: "Users not found",
+      error: err
+    })
+  })
+}
+
+//change type of user
+export function changeUserType(req,res){
+  //validate admin
+  if(!isAdminValid(req)){
+    res.status(403).json({
+      message: "Forbidden"
+    })
+    return;
+  }
+  const userId = req.params.userId;
+  const type = req.body.type;
+
+  User.findOneAndUpdate({_id: userId},{type: type}).then(()=>{
+    res.json({
+      message: "User type updated"
+    })
+  }).catch((err)=>{
+    res.json({
+      message: "User type update failed",
+      error: err
+    })
+  })
+}
+
+//disable or enable user
+export function disableUser(req,res){
+  //validate admin
+  if(!isAdminValid(req)){
+    res.status(403).json({
+      message: "Forbidden"
+    })
+    return;
+  }
+  const userId = req.params.userId;
+  const disabled = req.body.disabled;
+
+  User.findOneAndUpdate({_id: userId},{disabled: disabled}).then(()=>{
+    res.json({
+      message: "User disabled/enabled"
+    })
+  }).catch((err)=>{
+    res.json({
+      message: "User disable/enable failed",
+      error: err
+    })
+  })
+}
+
 export function getUser(req,res){
-  const user = req.body.user;
+  const user = req.user;
   console.log(user)
   if(user == null){
     res.json({
@@ -108,6 +176,28 @@ export function getUser(req,res){
       user : user
     })
   }
+}
+
+export function delelteUserByEmail(req,res){
+  //validate admin
+  if(!isAdminValid(req)){
+    res.status(403).json({
+      message: "Forbidden"
+    })
+    return;
+  }
+  const email = req.params.email;
+
+  User.findOneAndDelete({email: email}).then(()=>{
+    res.json({
+      message: "User deleted"
+    })
+  }).catch((err)=>{
+    res.json({
+      message: "User delete failed",
+      error: err
+    })
+  })
 }
 
 
